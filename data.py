@@ -79,6 +79,4 @@ for ite in box:
       [*[" ".join([str(card) for card in a]) for a in box[0]['cards']]]+
       [" ".join([str(card) for card in ite["played"]])," ".join([str(card) for card in ite["action"]])]
   )
-import pandas as pd
-df = pd.DataFrame(data,columns=[*[f'Card {i+1}' for i in range(4)]+['Played','Action']])
-df.to_csv("data-1.csv")
+ 
