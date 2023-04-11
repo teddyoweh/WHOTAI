@@ -34,11 +34,10 @@ class DecisionTree:
             return Node(value=leaf_value)
 
         feat_idxs = np.random.choice(n_feats, self.n_features, replace=False)
-
-        # find the best split
+ 
         best_feature, best_thresh = self._best_split(X, y, feat_idxs)
 
-        # create child nodes
+ 
         left_idxs, right_idxs = self._split(X[:, best_feature], best_thresh)
         left = self._grow_tree(X[left_idxs, :], y[left_idxs], depth+1)
         right = self._grow_tree(X[right_idxs, :], y[right_idxs], depth+1)
@@ -54,7 +53,7 @@ class DecisionTree:
             thresholds = np.unique(X_column)
 
             for thr in thresholds:
-                # calculate the information gain
+ 
                 gain = self._information_gain(y, X_column, thr)
 
                 if gain > best_gain:
@@ -66,10 +65,10 @@ class DecisionTree:
 
 
     def _information_gain(self, y, X_column, threshold):
-        # parent entropy
+ 
         parent_entropy = self._entropy(y)
 
-        # create children
+   
         left_idxs, right_idxs = self._split(X_column, threshold)
 
         if len(left_idxs) == 0 or len(right_idxs) == 0:
@@ -81,7 +80,7 @@ class DecisionTree:
         e_l, e_r = self._entropy(y[left_idxs]), self._entropy(y[right_idxs])
         child_entropy = (n_l/n) * e_l + (n_r/n) * e_r
 
-        # calculate the IG
+   
         information_gain = parent_entropy - child_entropy
         return information_gain
 

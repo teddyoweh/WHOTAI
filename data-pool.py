@@ -13,7 +13,7 @@ stores = {
     'circle': circles,
     'triangle': triangles,
     'cross': crosses,
-    'sqaure': squares,
+    'square': squares,
     'star': stars,
     'whot': whots
 }
@@ -51,6 +51,8 @@ def nextplay(cards, card):
             return 'go market'
         if card[1] == 8:
             return 'hold on'
+        if card[1]==2:
+            return 'pick 2'
 
         if i[0] == card[0] or i[1] == card[1]:
             return i
@@ -91,4 +93,4 @@ if __name__ == '__main__':
 
     import pandas as pd
     df = pd.DataFrame(data, columns=[*[f'Card {i + 1}' for i in range(4)] + ['Played', 'Action']])
-    df.to_csv("data.csv")
+    df.to_csv("train.csv")
