@@ -177,6 +177,10 @@ class PreTrainedWhotAI(CleanTokenize):
         self.wdf = self.df.drop_duplicates()
         self.cards,self.ActionCard = self.wdf.drop(columns=['Action']),self.wdf['Action']
         self.model = model
+    def savetokens(self,tokename):
+        Utils.save_object(self.tokens,tokename)
+    def train(self):
+
         self.model.fit(self.cards.values,self.ActionCard.values)
     def save(self,modelname,tokename):
         Utils.save_object(self.model,modelname)
@@ -197,11 +201,17 @@ class PostTrainedWhotAI(object):
         card1,card2,card3,card4 = cards
 
         return Utils.findkey(self.tokens,self.model.predict([[self.tokens[card1],self.tokens[card2],self.tokens[card3],self.tokens[card4],self.tokens[played]]])[0])
+model = PostTrainedWhotAI('whotmodel','whottokens')
+# print(model.tokens)
 
+# mo = PreTrainedWhotAI(pd.read_csv('train.csv'))
+# mo.savetokens('whottokens')
+# print(Utils.load_object('whottokens'))
+print(model.predict(['circle 1','circle 2','circle 3','circle 4'],'triangle 4'))
     
-whot = PreTrainedWhotAI(pd.read_csv('data.csv'))
-whot.save('whotmodel','whottokens')
-print('Finished Training')
+# whot = PreTrainedWhotAI(pd.read_csv('data.csv'))
+# whot.save('whotmodel','whottokens')
+# print('Finished Training')
 
 
 # def train_model(data):

@@ -1,0 +1,3 @@
+# WHOT AI
+
+Machine Model 
