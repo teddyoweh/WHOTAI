@@ -27,10 +27,8 @@ class DecisionTree:
 
     def fit(self, X, y):
         self.n_features = X.shape[1] if not self.n_features else min(X.shape[1],self.n_features)
-        try:
-            self.root = self._grow_tree(X, y)
-        except:
-            pass
+        self.root = self._grow_tree(X, y)
+       
 
     def _grow_tree(self, X, y, depth=0):
         n_samples, n_feats = X.shape
@@ -171,27 +169,26 @@ class CleanTokenize:
             insdata.append([self.tokens[_] for _ in i])
         return pd.DataFrame(data=insdata,columns=ins.columns)
     
+    
 class PreTrainedWhotAI(CleanTokenize):
     def __init__(self,data,model=RandomForest()):
         super().__init__(data)
         self.wdf = self.df.drop_duplicates()
         self.cards,self.ActionCard = self.wdf.drop(columns=['Action']),self.wdf['Action']
         self.model = model
-    def savetokens(self,tokename):
-        Utils.save_object(self.tokens,tokename)
-    def train(self):
-
         self.model.fit(self.cards.values,self.ActionCard.values)
-    def save(self,modelname,tokename):
+    def save(self,modelname,tokenname):
         Utils.save_object(self.model,modelname)
-        Utils.save_object(self.tokens,tokename)
+        Utils.save_object(self.tokens,tokenname)
+
     def predict(self,cards,played):
         cards.sort()
         card1,card2,card3,card4 = cards
 
         return Utils.findkey(self.tokens,self.model.predict([[self.tokens[card1],self.tokens[card2],self.tokens[card3],self.tokens[card4],self.tokens[played]]])[0])
 
-
+    
+    
 class PostTrainedWhotAI(object):
     def __init__(self, model,tokens) -> None:
         self.model = Utils.load_object(model)
@@ -199,42 +196,45 @@ class PostTrainedWhotAI(object):
     def predict(self,cards,played):
         cards.sort()
         card1,card2,card3,card4 = cards
+        #print(self.model.predict([[20,19,34,49,20]]))
+        #print(self.tokens[card1],self.tokens[card2],self.tokens[card3],self.tokens[card4],self.tokens[played])
+        return self.model.predict([self.tokens[card1],self.tokens[card2],self.tokens[card3],self.tokens[card4],self.tokens[played]])
+        #return Utils.findkey(self.tokens,[0])
 
-        return Utils.findkey(self.tokens,self.model.predict([[self.tokens[card1],self.tokens[card2],self.tokens[card3],self.tokens[card4],self.tokens[played]]])[0])
-model = PostTrainedWhotAI('whotmodel','whottokens')
-# print(model.tokens)
-
-# mo = PreTrainedWhotAI(pd.read_csv('train.csv'))
-# mo.savetokens('whottokens')
-# print(Utils.load_object('whottokens'))
-print(model.predict(['circle 1','circle 2','circle 3','circle 4'],'triangle 4'))
+def test_postmode():
+    model = PostTrainedWhotAI('whotmodel','whottokens')
+    print(model.predict(['circle 1','circle 2','circle 3','circle 4'],'circle 1'))
     
-# whot = PreTrainedWhotAI(pd.read_csv('data.csv'))
-# whot.save('whotmodel','whottokens')
-# print('Finished Training')
+def test_premodel():
+    whot = PreTrainedWhotAI(pd.read_csv('test.csv',nrows=1000))
+    whot.save('whotmodel','whottokens')
+    print('Finished Training')
 
 
-# def train_model(data):
-#     whot = PreTrainedWhotAI(data)
-#     whot.save('whotmodel', 'whottokens')
-#     print('Finished Training')
 
-# if __name__ == '__main__':
-#     data = pd.read_csv('train.csv')
+
+def parrellize_model():
+    def train_model(data):
+        whot = PreTrainedWhotAI(data)
+        whot.save('whotmodel', 'whottokens')
+        print('Finished Training')
+
+    if __name__ == '__main__':
+        data = pd.read_csv('train.csv')
+        
+        num_processes = 4
+        data_splits = np.array_split(data, num_processes)
+        
     
-#     num_processes = 4
-#     data_splits = np.array_split(data, num_processes)
-    
- 
-#     if len(data_splits) != num_processes:
-#         raise ValueError("Number of data splits does not match number of processes")
-    
-#     with Pool(processes=num_processes) as pool:
-#         try:
-#             pool.map(train_model, data_splits)
-#         except IndexError:
-       
-#             print([len(split) for split in data_splits])
-#             raise
+        if len(data_splits) != num_processes:
+            raise ValueError("Number of data splits does not match number of processes")
+        
+        with Pool(processes=num_processes) as pool:
+            try:
+                pool.map(train_model, data_splits)
+            except IndexError:
+        
+                print([len(split) for split in data_splits])
+                raise
 
- 
+    
