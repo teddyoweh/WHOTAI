@@ -5,7 +5,7 @@ import pandas as pd
 import pickle
 from multiprocessing import Pool ,cpu_count
 
-from utils import Utils
+from src.utils import Utils
 
 class Node:
     def __init__(self, feature=None, threshold=None, left=None, right=None,*,value=None):

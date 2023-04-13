@@ -48,7 +48,7 @@ class Simulate:
 
      
   
-             cardplayed = player.play(self.model,["".join([str(_) for _ in card]) for card in player.cards]," ".join([str(_) for _ in cardplayed]))
+             cardplayed = player.play(self.model,[" ".join([str(_) for _ in card]) for card in player.cards]," ".join([str(_) for _ in cardplayed]))
             
              logdata =f"""{player.name} With Deck {player.cards} played {" ".join([str(_) for _ in cardplayed]) } on action card {cardplayed}"""
              print(logdata)

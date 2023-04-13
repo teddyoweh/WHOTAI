@@ -1,4 +1,4 @@
-from whotmodel import PostTrainedWhotAI
+from src.whotmodel import PostTrainedWhotAI
 
 
 model = PostTrainedWhotAI('whotmodel','whottokens')
