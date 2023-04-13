@@ -10,8 +10,13 @@ def whotmodel():
   tokens  = {_:i for i,_ in enumerate(set(arrs)) }
   outtokens =  {_:i for i,_ in enumerate(set([_ for _ in list(outs.values)])) }
   insdata = []
+  outsdata = []
   for i in ins.values:
       insdata.append([tokens[_] for _ in i])
+  newdf = pd.DataFrame(data=insdata,columns=ins.columns)
+  newdf.head()
+  for i in outs.values:
+      outsdata.append([outtokens[_] for _ in i])
   newdf = pd.DataFrame(data=insdata,columns=ins.columns)
   newdf.head()
 #   outsdata = []
@@ -35,4 +40,5 @@ def callmodel(cards,played,model1):
 
 
 
-print(callmodel(['circle 1','circle 3','triangle 2','whot 20'],'sqaure 2',model))
+
+#print(callmodel(['circle 1','circle 3','triangle 2','whot 20'],'sqaure 2',model))

@@ -80,11 +80,12 @@ if __name__ == '__main__':
     box = []
     for jac in combos:
         for play in deck():
-            box.append({
-                'cards': jac,
-                'action': nextplay(jac, play),
-                'played': play
-            })
+            if play not in jac:
+                box.append({
+                    'cards': jac,
+                    'action': nextplay(jac, play),
+                    'played': play
+                })
 
     with Pool() as p:
         results = p.map(process_data, [box[i:i+1000] for i in range(0, len(box), 1000)])

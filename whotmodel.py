@@ -6,6 +6,7 @@ import pickle
 from multiprocessing import Pool ,cpu_count
 
 from utils import Utils
+
 class Node:
     def __init__(self, feature=None, threshold=None, left=None, right=None,*,value=None):
         self.feature = feature
@@ -102,10 +103,12 @@ class DecisionTree:
         return -np.sum([p * np.log(p) for p in ps if p>0])
 
 
-    def _most_common_label(self, y):
-        counter = Counter(y)
-        value = counter.most_common(1)[0][0]
-        return value
+    def _most_common_label(self,y):
+      counter = Counter(y)
+      if len(counter) == 0:  
+          return None
+      value = counter.most_common(1)[0][0]
+      return value
 
     def predict(self, X):
         return np.array([self._traverse_tree(x, self.root) for x in X])
@@ -187,8 +190,6 @@ class PreTrainedWhotAI(CleanTokenize):
 
         return Utils.findkey(self.tokens,self.model.predict([[self.tokens[card1],self.tokens[card2],self.tokens[card3],self.tokens[card4],self.tokens[played]]])[0])
 
-    
-    
 class PostTrainedWhotAI(object):
     def __init__(self, model,tokens) -> None:
         self.model = Utils.load_object(model)
@@ -196,10 +197,8 @@ class PostTrainedWhotAI(object):
     def predict(self,cards,played):
         cards.sort()
         card1,card2,card3,card4 = cards
-        #print(self.model.predict([[20,19,34,49,20]]))
-        #print(self.tokens[card1],self.tokens[card2],self.tokens[card3],self.tokens[card4],self.tokens[played])
-        return self.model.predict([self.tokens[card1],self.tokens[card2],self.tokens[card3],self.tokens[card4],self.tokens[played]])
-        #return Utils.findkey(self.tokens,[0])
+   
+        return Utils.findkey(self.tokens, self.model.predict([[self.tokens[card1],self.tokens[card2],self.tokens[card3],self.tokens[card4],self.tokens[played]]]))
 
 def test_postmode():
     model = PostTrainedWhotAI('whotmodel','whottokens')
