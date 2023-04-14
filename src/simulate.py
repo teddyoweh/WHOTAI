@@ -1,7 +1,21 @@
 from whotmodel import *
 import random
 
+def nextplay(cards,card):
+  valid = []
+  for i in cards:
+    if card[1]==14:
+      return 'go market'
+    if card[1]==8:
+      return 'hold on'
+    
 
+    if i[0]==card[0] or i[1]==card[1] :
+
+      return i# valid.append(i)
+  
+  return 'go market'
+ 
 class Log:
    def __init__(self,file):
       self.file = open(file,'a')
@@ -33,8 +47,10 @@ class Simulate:
        winner = ''
        cardsplayed = []
        cardplayed = self.deck[0]
+       self.deck.pop(0)
        while win==False:
-          
+          if len(self.deck) ==2:
+             self.deck+=cardsplayed
           for i in range(len(self.players)):
              player = self.players[i]
              if len(player.cards)==0:
@@ -47,13 +63,19 @@ class Simulate:
                 break
 
      
-  
-             cardplayed = player.play(self.model,[" ".join([str(_) for _ in card]) for card in player.cards]," ".join([str(_) for _ in cardplayed]))
-            
-             logdata =f"""{player.name} With Deck {player.cards} played {" ".join([str(_) for _ in cardplayed]) } on action card {cardplayed}"""
+             cardplayed1 = nextplay(player.cards,cardplayed)
+             #cardplayed1 = player.play(self.model,[" ".join([str(_) for _ in card]) for card in player.cards],str(",".join([str(_) for _ in cardplayed]).replace(","," ")))
+             print(cardplayed1,'fff')
+             logdata =f"""{player.name} With Deck {player.cards} played {cardplayed1 } on action card {cardplayed}"""
              print(logdata)
              self.logger.log(logdata)
-             player.cards.remove(cardplayed)
+             if cardplayed1=='go market':
+                player.cards.append(self.deck[0])
+                self.deck.pop(0)
+             else:
+                 cardplayed1=cardplayed1
+                 player.cards.remove(cardplayed1)
+             cardplayed = cardplayed1
 
 
 
@@ -105,5 +127,5 @@ WHOTPACK = Data()
 teddyscards,tylerscard = WHOTPACK.share(2)
 teddy = Player(name='Teddy',cards=teddyscards,deck=WHOTPACK.deck)
 tyler =  Player(name='Tyler',cards=tylerscard,deck=WHOTPACK.deck)
-sim = Simulate(players=[teddy,tyler],deck=WHOTPACK.deck,logger=logs,objectspath={'model':'./objects/whotmodel','tokens':'./objects/whottokens'})
+sim = Simulate(players=[teddy,tyler],deck=WHOTPACK.deck,logger=logs,objectspath={'model':'../objects/whotmodel','tokens':'../objects/whottokens'})
 sim.run()
