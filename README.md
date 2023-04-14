@@ -43,3 +43,7 @@ The time complexity of this program can be broken down into multiple parts:
 - The time complexity of the nested loop generating the 'box' list is `O(C(54, 4) * 54)`. After parallelizing this loop, the time complexity becomes `O(C(54, 4) * 54 / P)`. The time complexity is reduced by a factor of the number of cores (P) available on the system.
 - The time complexity of the process_data function is `O(C(n, k) * n)`, which is the same as the loop generating the 'box' list. When parallelized using P cores, the time complexity becomes `O(C(54, 4) * 54 / P)`.
 - The rest of the program has the same time complexity as before, which doesn't change significantly when parallelized. 
+
+
+### Serialized Objects
+I have already trained the model, it is saved in the `./objects/whotmodel` alongside the Word2Vec Tokens using in training, saved in `./objects/whottokens`
